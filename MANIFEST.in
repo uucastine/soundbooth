@@ -1,0 +1,27 @@
+include README.md
+include *.md
+include *.py
+include *.txt
+include *.html
+include tox.ini
+include *.env
+include Dockerfile
+include LICENSE
+include Makefile
+include Procfile
+include Vagrantfile
+recursive-include soundbooth/static *
+recursive-include soundbooth/templates *
+recursive-include soundbooth/apps *
+recursive-include docs *.bat
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs Makefile
+graft soundbooth
+recursive-exclude venv *
+global-exclude __pycache__
+global-exclude *.py[co]
+recursive-include ansible *
+recursive-include public *
+recursive-exculde etc *.conf
+
