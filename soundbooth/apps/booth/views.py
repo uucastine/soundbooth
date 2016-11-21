@@ -1,7 +1,7 @@
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 
 from .models import Recording
-#from .forms import RecordingForm
+from .forms import RecordingForm
 
 
 class RecordingListView(ListView):
@@ -10,7 +10,7 @@ class RecordingListView(ListView):
 
 class RecordingCreateView(CreateView):
     model = Recording
-
+    form_class = RecordingForm
 
 class RecordingDetailView(DetailView):
     model = Recording
@@ -18,4 +18,5 @@ class RecordingDetailView(DetailView):
 
 class RecordingUpdateView(UpdateView):
     model = Recording
+    form_class = RecordingForm
 

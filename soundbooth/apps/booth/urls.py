@@ -16,19 +16,19 @@ urlpatterns = (
 
 urlpatterns += (
     # urls for Recording
-    url(r'^booth/recording/$',
+    url(r'^$',
         RecordingListView.as_view(),
         name='booth_recording_list'
     ),
-    url(r'^booth/recording/create/$',
+    url(r'^create/$',
         RecordingCreateView.as_view(),
         name='booth_recording_create'
     ),
-    url(r'^booth/recording/detail/(?P<id>\S+)/$',
+    url(r'^detail/(?P<id>\S+)/$',
         RecordingDetailView.as_view(),
         name='booth_recording_detail'
     ),
-    url(r'^booth/recording/update/(?P<id>\S+)/$',
+    url(r'^update/(?P<id>\S+)/$',
         RecordingUpdateView.as_view(),
         name='booth_recording_update'
     ),

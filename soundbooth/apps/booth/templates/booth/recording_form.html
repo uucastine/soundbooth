@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
-{% load crispy_forms_tags %}
+{% load floppyforms %}
 {% block content %}
 <p><a class="btn btn-default" href="{% url 'booth_recording_list' %}">Recording Listing</a></p>
 <form method="post">
 {% csrf_token %}
-{{form|crispy}}
+{% form form %}
 <button class="btn btn-primary" type="submit">Submit</button>
 </form>
 {% endblock %}
