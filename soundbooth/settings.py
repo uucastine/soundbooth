@@ -57,7 +57,7 @@ class Common(Configuration):
         "django_extensions",
         'floppyforms',
         'rest_framework',
-
+        'booth',
     )
 
     TEMPLATES = [

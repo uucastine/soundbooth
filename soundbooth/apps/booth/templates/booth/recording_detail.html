@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'booth_recording_list' %}">Recording Listing</a></p>
+<table class="table">
+<tr><td>uid</td><td>{{ object.uid }}</td></tr>
+<tr><td>created</td><td>{{ object.created }}</td></tr>
+<tr><td>last_updated</td><td>{{ object.last_updated }}</td></tr>
+<tr><td>audio_file</td><td>{{ object.audio_file }}</td></tr>
+<tr><td>in_progress</td><td>{{ object.in_progress }}</td></tr>
+<tr><td>s3_path</td><td>{{ object.s3_path }}</td></tr>
+</table>
+<a class="btn btn-primary" href="{{object.get_update_url}}">Edit Recording</a>
+
+{% endblock %}
