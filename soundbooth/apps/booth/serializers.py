@@ -1,4 +1,4 @@
-from .models import Recording
+from .models import Recording, Schedule
 
 from rest_framework import serializers
 
@@ -17,4 +17,17 @@ class RecordingSerializer(serializers.ModelSerializer):
             's3_path',
         )
 
+
+class ScheduleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Schedule
+        fields = (
+            'id',
+            'uid',
+            'created',
+            'last_updated',
+            'date',
+            'rule',
+        )
 

@@ -1,7 +1,8 @@
 from rest_framework import viewsets, permissions
 
-from .models import Recording
-from .serializers import RecordingSerializer
+from .models import Recording, Schedule
+from .serializers import (RecordingSerializer,
+                          ScheduleSerializer)
 
 
 class RecordingViewSet(viewsets.ModelViewSet):
@@ -11,4 +12,12 @@ class RecordingViewSet(viewsets.ModelViewSet):
     serializer_class = RecordingSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
+
+class ScheduleViewSet(viewsets.ModelViewSet):
+    """ViewSet for the Schedule class"""
+
+    queryset = Schedule.objects.all()
+    serializer_class = ScheduleSerializer
+    permission_classes = [permissions.IsAuthenticated]
 

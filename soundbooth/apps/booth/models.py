@@ -63,10 +63,50 @@ class Recording(models.Model):
         return 'Recording from {}'.format(self.created)
 
     def get_absolute_url(self):
-        return reverse('booth_recording_detail', args=(self.id,))
+        return reverse('booth:recording-detail', args=(self.uid,))
 
 
     def get_update_url(self):
-        return reverse('booth_recording_update', args=(self.id,))
+        return reverse('booth:recording-update', args=(self.uid,))
 
 
+class Schedule(models.Model):
+    uid = models.UUIDField(
+        _('Public ID'),
+        unique=True,
+        editable=False,
+        default=uuid.uuid4,
+    )
+    created = models.DateTimeField(
+        auto_now_add=True,
+        editable=False
+    )
+    last_updated = models.DateTimeField(
+        auto_now=True,
+        editable=False
+    )
+    date = models.DateTimeField(
+        _('Date'),
+        blank=True,
+        null=True
+    )
+    rule = models.CharField(
+        _('Recurring rule'),
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+
+    class Meta:
+        ordering = ('-created',)
+
+    def __str__(self):
+        return 'Scheduled recording for {}'.format(self.created)
+
+    def get_absolute_url(self):
+        return reverse('booth:schedule-detail', args=(self.uid,))
+
+
+    def get_update_url(self):
+        return reverse('booth:schedule-update', args=(self.uid,))

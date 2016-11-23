@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'booth:schedule-list' %}">Schedule Listing</a></p>
+<table class="table">
+<tr><td>uid</td><td>{{ object.uid }}</td></tr>
+<tr><td>created</td><td>{{ object.created }}</td></tr>
+<tr><td>last_updated</td><td>{{ object.last_updated }}</td></tr>
+<tr><td>rule</td><td>{{ object.rule }}</td></tr>
+<tr><td>date</td><td>{{ object.date}}</td></tr>
+</table>
+<a class="btn btn-primary" href="{{object.get_update_url}}">Edit Schedule</a>
+
+{% endblock %}

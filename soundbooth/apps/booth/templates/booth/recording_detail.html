@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'booth_recording_list' %}">Recording Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'booth:recording-list' %}">Recording Listing</a></p>
 <table class="table">
 <tr><td>uid</td><td>{{ object.uid }}</td></tr>
 <tr><td>created</td><td>{{ object.created }}</td></tr>

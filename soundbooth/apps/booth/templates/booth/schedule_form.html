@@ -2,7 +2,7 @@
 {% load static %}
 {% load floppyforms %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'booth:recording-list' %}">Recording Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'booth:schedule-list' %}">Schedule Listing</a></p>
 <form method="post">
 {% csrf_token %}
 {% form form %}
