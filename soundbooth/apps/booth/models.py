@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from django_extensions.db.fields import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
@@ -10,6 +11,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import models as auth_models
 from django.db import models as models
 from django_extensions.db import fields as extension_fields
+from recurrent import RecurringEvent
+from dateutil import rrule
 
 # We setup a temporary file storage location on the server for our media files
 # so we can get our mimetypes before uploading to S3
@@ -85,16 +88,29 @@ class Schedule(models.Model):
         auto_now=True,
         editable=False
     )
+    active = models.BooleanField(
+        _('Active'),
+        default=True,
+    )
     date = models.DateTimeField(
         _('Date'),
         blank=True,
-        null=True
+        null=True,
+        help_text='One-off recording date, can be blank for recurring events.'
+    )
+    time = models.TimeField(
+        _('Time to record'),
     )
     rule = models.CharField(
         _('Recurring rule'),
         max_length=255,
         blank=True,
-        null=True
+        null=True,
+        help_text='A human-readable pattern for recurring schedules',
+    )
+    duration = models.IntegerField(
+        _('Duration (minutes)'),
+        default=30,
     )
 
 
@@ -110,3 +126,30 @@ class Schedule(models.Model):
 
     def get_update_url(self):
         return reverse('booth:schedule-update', args=(self.uid,))
+
+    def get_rrule(self):
+        if self.rule:
+            return rrule.rrulestr(RecurringEvent().parse(self.rule))
+        return False
+
+    @property
+    def next_date(self):
+        next_date = None
+        rule = self.get_rrule()
+
+        if self.date:
+            next_date = self.date
+
+        if rule:
+            n = rule.after(datetime.now())
+            next_date = datetime(
+                n.year,
+                n.month,
+                n.day,
+                self.time.hour,
+                self.time.minute
+            )
+            
+        return next_date
+
+            

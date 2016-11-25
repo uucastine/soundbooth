@@ -31,6 +31,7 @@ install_requires = [
     'markdown>=2.6.1',
     'django-filter>=0.9.2',
     'pyaudio',
+    'parsedatetime>=2.1',
     'celery>=4',
 ]
 

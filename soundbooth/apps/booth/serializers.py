@@ -19,6 +19,7 @@ class RecordingSerializer(serializers.ModelSerializer):
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
+    next_date = serializers.ReadOnlyField()
 
     class Meta:
         model = Schedule
@@ -27,7 +28,9 @@ class ScheduleSerializer(serializers.ModelSerializer):
             'uid',
             'created',
             'last_updated',
+            'time',
             'date',
             'rule',
+            'next_date',
         )
 
