@@ -57,6 +57,11 @@ class Recording(models.Model):
         null=True,
         blank=True
     )
+    schedule = models.ForeignKey(
+        'Schedule',
+        blank=True,
+        null=True
+    )
 
 
     class Meta:
@@ -131,6 +136,14 @@ class Schedule(models.Model):
         if self.rule:
             return rrule.rrulestr(RecurringEvent().parse(self.rule))
         return False
+
+    def get_crontab(self):
+        tab = None
+        if self.rule:
+            rrule = self.get_rrule()
+
+        return tab
+
 
     @property
     def next_date(self):

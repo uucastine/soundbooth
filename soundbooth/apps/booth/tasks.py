@@ -1,25 +1,33 @@
-from celery import shared_task
-from .models import Schedule, Recording
-from .utils import record_to_file
 from datetime import datetime
 
+from celery import shared_task
+from django.core import management
+
+from .models import Schedule, Recording
+from .utils import record_to_file
 
 @shared_task
-def record_audio(duration):
+def new_recording(schedule_id):
     filename = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-    record_to_file(duration, filename)
+    schedule = Schedule.object.filter(pk=schedule_id).first()
+    recording = None
+    if schedule:
+        recording = Recording.objects.create(
+            schedule=schedule
+        )
+        recording.audio_file = record_to_file(schedule.duration, filename)
+    return r
 
 @shared_task
 def check_schedules():
-    """ process_schedules
+    management.call_command('create_recordings')
 
-    Grab all active schedules, and run through them, checking if :
+
+
+@shared_task
+def upload_to_s3():
+    """ 
+
+    Should run through recordings and upload them to S3
     """
-    schedules = Schedule.objects.filter(active=True)
-    print('Checking for scheduled recordings ...')
-    for schedule in schedules:
-        if schedule.next_date:
-            if schedule.next_date <= datetime.now():
-                print('Spin off recording task for {}'.format(schedule))
-                start_new_recording.delay(schedule.duration)
-
+    return 's3_path'

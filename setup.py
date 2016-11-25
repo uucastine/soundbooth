@@ -33,7 +33,7 @@ install_requires = [
     'pyaudio',
     'parsedatetime>=2.1',
     'celery[redis]>=4',
-    'redis>=2.10.5',
+    'django-celery-beat>=1.0.1',
 ]
 
 # App specific libraries

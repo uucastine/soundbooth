@@ -11,6 +11,8 @@ class RecordingViewSet(viewsets.ModelViewSet):
     queryset = Recording.objects.all()
     serializer_class = RecordingSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'uid'
+
 
 
 
@@ -20,4 +22,7 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'uid'
 
+    #def get_queryset(self):
+    #    return Reservation.objects.filter(user=self.request.user)

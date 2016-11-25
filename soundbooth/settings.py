@@ -11,7 +11,6 @@ import os
 import sys
 
 from configurations import Configuration, values
-from celery.schedules import crontab
 
 
 class Common(Configuration):
@@ -55,7 +54,8 @@ class Common(Configuration):
         'allauth.socialaccount',
         'allauth.socialaccount.providers.github',
         'allauth.socialaccount.providers.google',
-        "django_extensions",
+        'django_extensions',
+        #'django_celery_beat',
         'floppyforms',
         'rest_framework',
         'booth',
