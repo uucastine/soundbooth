@@ -32,5 +32,6 @@ class ScheduleSerializer(serializers.ModelSerializer):
             'date',
             'rule',
             'next_date',
+            'active',
         )
 

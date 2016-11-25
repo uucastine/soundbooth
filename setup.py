@@ -32,7 +32,8 @@ install_requires = [
     'django-filter>=0.9.2',
     'pyaudio',
     'parsedatetime>=2.1',
-    'celery>=4',
+    'celery[redis]>=4',
+    'redis>=2.10.5',
 ]
 
 # App specific libraries

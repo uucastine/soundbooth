@@ -11,6 +11,7 @@ import os
 import sys
 
 from configurations import Configuration, values
+from celery.schedules import crontab
 
 
 class Common(Configuration):
@@ -114,6 +115,17 @@ class Common(Configuration):
     DATABASES = values.DatabaseURLValue('sqlite:///{0}'.format(
         os.path.join(BASE_DIR, 'db.sqlite3'),
         environ=True))
+
+    BROKER_URL = values.Value('redis://localhost:6379/0')
+    BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+    CELERYBEAT_SCHEDULE = {
+        'check_schedules_every_minute': {
+            'task': 'booth.tasks.check_schedules',
+            'schedule': 60.0
+        },
+    }
 
     NEVERCACHE_KEY = values.Value('klladsf-wefkjlwef-wekjlwef--wefjlkjfslkxvl')
 

@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django_extensions.db.fields import AutoSlugField
 from django.utils.translation import ugettext_lazy as _
@@ -141,7 +141,11 @@ class Schedule(models.Model):
             next_date = self.date
 
         if rule:
-            n = rule.after(datetime.now())
+            if datetime.now().time() <= self.time:
+                reference = datetime.now()-timedelta(days=1)
+            else:
+                reference = datetime.now()
+            n = rule.after(reference)
             next_date = datetime(
                 n.year,
                 n.month,
@@ -149,7 +153,6 @@ class Schedule(models.Model):
                 self.time.hour,
                 self.time.minute
             )
-            
+
         return next_date
 
-            
