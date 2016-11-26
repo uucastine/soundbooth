@@ -8,7 +8,7 @@ import wave
 
 from django.conf import settings
 
-CHANNELS = 1
+CHANNELS = 2
 SAMPLE_RATE = 44100
 THRESHOLD = 500
 CHUNK_SIZE = 1024
@@ -74,9 +74,14 @@ def record(duration):
     """
     duration = int(duration) * 60
     p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT, channels=1, rate=SAMPLE_RATE,
-        input=True, output=True,
-        frames_per_buffer=CHUNK_SIZE)
+    stream = p.open(
+        format=FORMAT,
+        channels=1,
+        rate=SAMPLE_RATE,
+        input=True,
+        output=True,
+        frames_per_buffer=CHUNK_SIZE
+    )
 
     num_silent = 0
     snd_started = False
