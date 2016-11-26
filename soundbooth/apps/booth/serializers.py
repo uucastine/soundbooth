@@ -16,6 +16,7 @@ class RecordingSerializer(serializers.ModelSerializer):
             'audio_file',
             'in_progress',
             's3_path',
+            'finished',
         )
         extra_kwargs = {
             'url': {'lookup_field': 'uid'}
@@ -34,6 +35,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
             'created',
             'last_updated',
             'crontab',
+            'duration',
             'next_date',
             'active',
         )

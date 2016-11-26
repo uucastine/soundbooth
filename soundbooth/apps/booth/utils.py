@@ -72,7 +72,7 @@ def record(duration):
     blank sound to make sure VLC et al can play 
     it without getting chopped off.
     """
-    duration = int(duration)
+    duration = int(duration) * 60
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT, channels=1, rate=SAMPLE_RATE,
         input=True, output=True,
@@ -130,6 +130,7 @@ def record_to_file(duration, filename):
     wf.setframerate(SAMPLE_RATE)
     wf.writeframes(data)
     wf.close()
+    return path
 
 if __name__ == '__main__':
     print("please speak a word into the microphone")

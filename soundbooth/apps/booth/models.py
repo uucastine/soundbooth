@@ -53,7 +53,13 @@ class Recording(models.Model):
     )
     in_progress = models.BooleanField(
         _('Recoridng in progress'),
-        default=False
+        default=True
+    )
+    finished = models.DateTimeField(
+        _('Finished'),
+        editable=False,
+        blank=True,
+        null=True
     )
     s3_path = models.CharField(
         _('S3 path'),
