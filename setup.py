@@ -34,6 +34,7 @@ install_requires = [
     'parsedatetime>=2.1',
     'celery[redis]>=4',
     'django-celery-beat>=1.0.1',
+    'crontab>=0.21.3',
 ]
 
 # App specific libraries

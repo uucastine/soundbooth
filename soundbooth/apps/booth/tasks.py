@@ -16,12 +16,8 @@ def new_recording(schedule_id):
             schedule=schedule
         )
         recording.audio_file = record_to_file(schedule.duration, filename)
-    return r
-
-@shared_task
-def check_schedules():
-    management.call_command('create_recordings')
-
+        recording.save()
+    return recording
 
 
 @shared_task

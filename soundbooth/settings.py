@@ -55,7 +55,7 @@ class Common(Configuration):
         'allauth.socialaccount.providers.github',
         'allauth.socialaccount.providers.google',
         'django_extensions',
-        #'django_celery_beat',
+        'django_celery_beat',
         'floppyforms',
         'rest_framework',
         'booth',
@@ -119,13 +119,6 @@ class Common(Configuration):
     BROKER_URL = values.Value('redis://localhost:6379/0')
     BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-    CELERYBEAT_SCHEDULE = {
-        'check_schedules_every_minute': {
-            'task': 'booth.tasks.check_schedules',
-            'schedule': 60.0
-        },
-    }
 
     NEVERCACHE_KEY = values.Value('klladsf-wefkjlwef-wekjlwef--wefjlkjfslkxvl')
 

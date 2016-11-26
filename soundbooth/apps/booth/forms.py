@@ -12,5 +12,5 @@ class RecordingForm(forms.ModelForm):
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
-        fields = ['date', 'rule']
+        fields = ['crontab', 'active']
 

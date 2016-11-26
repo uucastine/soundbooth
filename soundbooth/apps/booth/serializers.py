@@ -33,9 +33,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
             'uid',
             'created',
             'last_updated',
-            'time',
-            'date',
-            'rule',
+            'crontab',
             'next_date',
             'active',
         )

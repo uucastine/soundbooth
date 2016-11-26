@@ -1,3 +1,4 @@
+import json
 import uuid
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
@@ -11,6 +12,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import models as auth_models
 from django.db import models as models
 from django_extensions.db import fields as extension_fields
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
+
+from crontab import CronTab
 from recurrent import RecurringEvent
 from dateutil import rrule
 
@@ -71,11 +75,15 @@ class Recording(models.Model):
         return 'Recording from {}'.format(self.created)
 
     def get_absolute_url(self):
-        return reverse('booth:recording-detail', args=(self.uid,))
+        return reverse('booth:recordings-detail', args=(self.uid,))
 
 
     def get_update_url(self):
-        return reverse('booth:recording-update', args=(self.uid,))
+        return reverse('booth:recordings-update', args=(self.uid,))
+
+
+    def save(self, *args, **kwargs):
+        super(Recording, self).save(*args, **kwargs)
 
 
 class Schedule(models.Model):
@@ -103,15 +111,12 @@ class Schedule(models.Model):
         null=True,
         help_text='One-off recording date, can be blank for recurring events.'
     )
-    time = models.TimeField(
-        _('Time to record'),
-    )
-    rule = models.CharField(
-        _('Recurring rule'),
+    crontab = models.CharField(
+        _('Crontab format'),
         max_length=255,
         blank=True,
         null=True,
-        help_text='A human-readable pattern for recurring schedules',
+        help_text='A crontab format for recurring schedules',
     )
     duration = models.IntegerField(
         _('Duration (minutes)'),
@@ -126,46 +131,39 @@ class Schedule(models.Model):
         return 'Scheduled recording for {}'.format(self.created)
 
     def get_absolute_url(self):
-        return reverse('booth:schedule-detail', args=(self.uid,))
+        return reverse('booth:schedules-detail', args=(self.uid,))
 
 
     def get_update_url(self):
-        return reverse('booth:schedule-update', args=(self.uid,))
-
-    def get_rrule(self):
-        if self.rule:
-            return rrule.rrulestr(RecurringEvent().parse(self.rule))
-        return False
+        return reverse('booth:schedules-update', args=(self.uid,))
 
     def get_crontab(self):
-        tab = None
-        if self.rule:
-            rrule = self.get_rrule()
-
+        tab = {}
+        if self.crontab:
+            pieces = self.crontab.split(' ')
+            tab['minute']=pieces[0]
+            tab['hour']=pieces[1]
+            tab['day_of_week']=pieces[2]
+            tab['day_of_month']=pieces[3]
+            tab['month_of_year']=pieces[4]
+            tab, _ = CrontabSchedule.objects.get_or_create(**tab)
         return tab
 
 
-    @property
-    def next_date(self):
-        next_date = None
-        rule = self.get_rrule()
+    def save(self, *args, **kwargs):
+        super(Schedule, self).save(*args, **kwargs)
+        self._create_periodictask()
 
-        if self.date:
-            next_date = self.date
 
-        if rule:
-            if datetime.now().time() <= self.time:
-                reference = datetime.now()-timedelta(days=1)
-            else:
-                reference = datetime.now()
-            n = rule.after(reference)
-            next_date = datetime(
-                n.year,
-                n.month,
-                n.day,
-                self.time.hour,
-                self.time.minute
+    def _create_periodictask(self):
+        if self.crontab:
+            task, _ = PeriodicTask.objects.get_or_create(
+                name='Task for schedule {}'.format(self.uid),
             )
-
-        return next_date
+            task.crontab=self.get_crontab()
+            task.task='booth.tasks.new_recording'
+            task.kwargs=json.dumps({
+                'schedule_id': self.id
+            })
+            task.save()
 
