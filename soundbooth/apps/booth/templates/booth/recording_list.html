@@ -19,7 +19,7 @@
 <tr>
     <td><a href="{{object.get_absolute_url}}">{{object.created|date:"M d Y P"}}</a></td>
     <td>{{ object.in_progress }}</td>
-    <td>{{ object.schedule.duration }} minutes</td>
+    <td>{{ object.duration }} minutes</td>
     <td>{{ object.s3_path }}</td>
 </tr>
 {% endfor %}

@@ -75,6 +75,11 @@ class Recording(models.Model):
         blank=True,
         null=True
     )
+    duration = models.IntegerField(
+        _('Duration (minutes)'),
+        blank=True,
+        null=True
+    )
 
 
     class Meta:
@@ -149,17 +154,33 @@ class Schedule(models.Model):
     def get_display_crontab(self):
         tab = self.get_crontab()
         diff, hours, minutes = get_timezone_offset()
-        if diff == '-':
-            hour = str(int(tab.hour)-hours)
-        else:
-            hour = str(int(tab.hour)+hours)
+
+        hour = tab.hour
+        if hour != '*' and '/' not in hour:
+            if diff == '-':
+                hour = str(int(hour)-hours)
+            else:
+                hour = str(int(hour)+hours)
+
         minute = tab.minute
-        if int(tab.minute) < 10:
-            minute = '0' + tab.minute
-        day_of_week = "every day at "
+        if '/' not in minute:
+            if int(minute) < 10:
+                minute = ':0' + minute
+        else:
+            minute = ', every {} minutes'.format(minute.split('/')[1])
+
+        if '/' in hour:
+            hour = ', every {} hours'.format(hour.split('/')[1])
+
+        if hour == '*' and '*' not in minute:
+            hour = ', {} minutes past every hour'.format(minute)
+            minute=''
+
+        day_of_week = "every day"
         if tab.day_of_week != '*':
-            day_of_week = calendar.day_name[int(tab.day_of_week)] + 's at '
-        return day_of_week + hour + ':' + minute
+            day_of_week = calendar.day_name[int(tab.day_of_week)-1] + 's '
+
+        return day_of_week + hour + minute
 
 
     def get_crontab(self):
@@ -167,12 +188,16 @@ class Schedule(models.Model):
         if self.crontab:
             diff, hours, minutes = get_timezone_offset()
             pieces = self.crontab.split(' ')
-            if diff == '-':
-                tab['minute'] = int(pieces[0]) + minutes
-                tab['hour']= int(pieces[1]) + hours
+            if '*' not in pieces[0] and '*' not in pieces[1]:
+                if diff == '-':
+                    tab['minute'] = int(pieces[0]) + minutes
+                    tab['hour']= int(pieces[1]) + hours
+                else:
+                    tab['minute'] = int(pieces[0]) - minutes
+                    tab['hour'] = int(pieces[1]) - hours
             else:
-                tab['minute'] = int(pieces[0]) - minutes
-                tab['hour'] = int(pieces[1]) - hours
+                tab['minute'] = pieces[0]
+                tab['hour'] = pieces[1]
             tab['day_of_week']=pieces[2]
             tab['day_of_month']=pieces[3]
             tab['month_of_year']=pieces[4]

@@ -17,8 +17,12 @@ def new_recording(schedule_id):
         )
         recording.audio_file = record_to_file(schedule.duration, filename)
         recording.in_progress = False
+        recording.duration = schedule.duration
         recording.finished = datetime.now()
         recording.save()
+
+	# Send notifications as configured in the schedule:
+        # Email, in-app
     return recording
 
 

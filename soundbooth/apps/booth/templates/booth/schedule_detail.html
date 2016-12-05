@@ -3,7 +3,7 @@
 {% block content %}
 <p><a class="btn btn-default" href="{% url 'booth:recordings-list' %}">Home</a></p>
 
-<h2>Scheduled recording at {{object.get_display_crontab}}</h2>
+<h2>Scheduled recording {{object.get_display_crontab}}</h2>
 <p>Created: {{object.created}}</p>
 <p>Duration: {{object.duration}}</p>
 
