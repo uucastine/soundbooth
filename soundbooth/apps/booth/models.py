@@ -101,6 +101,12 @@ class Recording(models.Model):
 
 
 class Schedule(models.Model):
+    name = models.CharField(
+        _('Name'),
+        max_length=255,
+        blank=True,
+        null=True
+    )
     uid = models.UUIDField(
         _('Public ID'),
         unique=True,
@@ -142,6 +148,9 @@ class Schedule(models.Model):
         ordering = ('-created',)
 
     def __str__(self):
+        if self.name:
+            return self.name
+
         return 'Scheduled recording for {}'.format(self.created)
 
     def get_absolute_url(self):

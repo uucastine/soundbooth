@@ -32,6 +32,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'uid',
+            'name',
             'created',
             'last_updated',
             'crontab',
