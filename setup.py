@@ -35,6 +35,7 @@ install_requires = [
     'celery[redis]>=4',
     'django-celery-beat>=1.0.1',
     'crontab>=0.21.3',
+    'honcho==0.7.1',
 ]
 
 # App specific libraries

@@ -1,14 +1,34 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'booth:schedule-list' %}">Schedule Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'booth:recordings-list' %}">Home</a></p>
+
+<h2>Scheduled recording at {{object.get_display_crontab}}</h2>
+<p>Created: {{object.created}}</p>
+<p>Duration: {{object.duration}}</p>
+
+<h3>Recordings</h3>
+{% if schedule.recording_set.all %}
 <table class="table">
-<tr><td>uid</td><td>{{ object.uid }}</td></tr>
-<tr><td>created</td><td>{{ object.created }}</td></tr>
-<tr><td>last_updated</td><td>{{ object.last_updated }}</td></tr>
-<tr><td>rule</td><td>{{ object.rule }}</td></tr>
-<tr><td>date</td><td>{{ object.date}}</td></tr>
+<tr>
+    <td>created</td>
+    <td>in_progress</td>
+    <td>s3_path</td>
+    <td>duration</td>
+</tr>
+{% for object in schedule.recording_set.all %}
+<tr>
+    <td><a href="{{object.get_absolute_url}}">{{object.created|date:"M d Y P"}}</a></td>
+    <td>{{ object.in_progress }}</td>
+    <td>{{ object.s3_path }}</td>
+    <td>{{ object.schedule.duration}}</td>
+</tr>
+{% endfor %}
 </table>
+{% else %}
+<p>There are no recordings for this schedule yet</p>
+{% endif %}
+
 <a class="btn btn-primary" href="{{object.get_update_url}}">Edit Schedule</a>
 
 {% endblock %}

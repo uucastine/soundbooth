@@ -1,5 +1,6 @@
 import json
 import uuid
+import calendar
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django_extensions.db.fields import AutoSlugField
@@ -17,6 +18,8 @@ from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from crontab import CronTab
 from recurrent import RecurringEvent
 from dateutil import rrule
+
+from .utils import get_timezone_offset
 
 # We setup a temporary file storage location on the server for our media files
 # so we can get our mimetypes before uploading to S3
@@ -143,12 +146,33 @@ class Schedule(models.Model):
     def get_update_url(self):
         return reverse('booth:schedules-update', args=(self.uid,))
 
+    def get_display_crontab(self):
+        tab = self.get_crontab()
+        diff, hours, minutes = get_timezone_offset()
+        if diff == '-':
+            hour = str(int(tab.hour)-hours)
+        else:
+            hour = str(int(tab.hour)+hours)
+        minute = tab.minute
+        if int(tab.minute) < 10:
+            minute = '0' + tab.minute
+        day_of_week = "every day at "
+        if tab.day_of_week != '*':
+            day_of_week = calendar.day_name[int(tab.day_of_week)] + 's at '
+        return day_of_week + hour + ':' + minute
+
+
     def get_crontab(self):
         tab = {}
         if self.crontab:
+            diff, hours, minutes = get_timezone_offset()
             pieces = self.crontab.split(' ')
-            tab['minute']=pieces[0]
-            tab['hour']=pieces[1]
+            if diff == '-':
+                tab['minute'] = int(pieces[0]) + minutes
+                tab['hour']= int(pieces[1]) + hours
+            else:
+                tab['minute'] = int(pieces[0]) - minutes
+                tab['hour'] = int(pieces[1]) - hours
             tab['day_of_week']=pieces[2]
             tab['day_of_month']=pieces[3]
             tab['month_of_year']=pieces[4]
@@ -159,7 +183,7 @@ class Schedule(models.Model):
     def save(self, *args, **kwargs):
         super(Schedule, self).save(*args, **kwargs)
         self._create_periodictask()
-
+        
 
     def _create_periodictask(self):
         if self.crontab:

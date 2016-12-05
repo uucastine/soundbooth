@@ -1,4 +1,6 @@
 import os
+import pytz
+from datetime import datetime
 from sys import byteorder
 from array import array
 from struct import pack
@@ -11,11 +13,11 @@ from django.conf import settings
 CHANNELS = 2
 SAMPLE_RATE = 44100
 THRESHOLD = 500
-CHUNK_SIZE = 1024
+CHUNK_SIZE = 2048
 FORMAT = pyaudio.paInt16
 
 TEMP_PATH = getattr(settings, 'BOOTH_RECORDING_STORAGE_PATH', '/tmp')
-
+TIME_ZONE = getattr(settings, 'TIME_ZONE', 'American/New_York')
 
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
@@ -141,3 +143,17 @@ if __name__ == '__main__':
     print("please speak a word into the microphone")
     record_to_file(10, 'demo.wav')
     print("done - result written to demo.wav")
+
+
+def get_timezone_offset():
+    tz = pytz.timezone(TIME_ZONE)
+    dt = datetime.utcnow()
+    offset_days = tz.utcoffset(dt).days
+    offset = '+'
+    if str(offset_days)[0] == '-':
+        offset = '-' 
+    offset_seconds = tz.utcoffset(dt).seconds
+    offset_hours = offset_seconds / 3600.0
+    if offset == '-':
+        offset_hours = 24 - offset_hours
+    return offset, int(offset_hours), int((offset_hours % 1) * 60)

@@ -5,14 +5,14 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 admin.autodiscover()
 
+from booth.views import HomepageView
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^', include('booth.urls', namespace='booth')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url("^$",
-        TemplateView.as_view(template_name='homepage.html'),
-        name="homepage")
+    url("^$", HomepageView.as_view(), name="homepage")
 ]
 
 if settings.DEBUG:

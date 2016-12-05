@@ -1,28 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'booth:schedule-list' %}">Schedule Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'booth:recordings-list' %}">Home</a></p>
 <table class="table">
 <tr>
-<td>ID</td><td>Link</td>
+    <td>Schedule</td>
+    <td>duration</td>
+    <td>date</td>
     <td>uid</td>
     <td>created</td>
-    <td>last_updated</td>
-    <td>audio_file</td>
-    <td>in_progress</td>
-    <td>s3_path</td>
+    <td>recordings</td>
 </tr>
 {% for object in object_list %}
 <tr>
-    <td>{{object.id}}</td>
-    <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
+    <td><a href="{{object.get_absolute_url}}">{{object.get_display_crontab}}</a></td>
+    <td>{{ object.duration}} minutes</td>
+    <td>{{ object.date}}</td>
     <td>{{ object.uid }}</td>
     <td>{{ object.created }}</td>
-    <td>{{ object.last_updated }}</td>
-    <td>{{ object.audio_file }}</td>
-    <td>{{ object.in_progress }}</td>
-    <td>{{ object.s3_path }}</td>
+    <td>{{ object.recording_set.all|length }}</td>
 </tr>
 {% endfor %}
-</table><a class="btn btn-primary" href="{% url 'booth:schedule-create' %}">Create new Schedule</a>
+</table><a class="btn btn-primary" href="{% url 'booth:schedules-create' %}">Create new Schedule</a>
 {% endblock %}
