@@ -1,8 +1,6 @@
 SoundBooth
 ==========
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uucastine/soundbooth?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Build
 Status](https://travis-ci.org/uucastine/soundbooth.svg?branch=master)](https://travis-ci.org/uucastine/soundbooth)
 
@@ -43,3 +41,5 @@ If you've never used Django on your machine before, you may need to:
 or 
 
 `make mac_deps`
+
+
